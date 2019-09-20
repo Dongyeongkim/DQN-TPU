@@ -42,8 +42,8 @@ class ReplayBuffer(object):
 def build_dqn(lr,n_actions,input_dims,fcl_dims):
     model = tf.keras.Sequential()
     model.add(tf.keras.layers.Dense(7056,activation='relu', input_shape=(*input_dims,)))
-    model.add(tf.keras.layers.Conv2D(512,activation='relu'))
-    model.add(tf.keras.layers.Conv2D(256,activation='relu'))
+    model.add(tf.keras.layers.Dense(512,activation='relu'))
+    model.add(tf.keras.layers.Dense(256,activation='relu'))
     model.add(tf.keras.layers.Flatten())
     model.add(tf.keras.layers.Dense(fcl_dims,activation='relu'))
     model.add(tf.keras.layers.Dense(n_actions))
