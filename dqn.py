@@ -1,5 +1,12 @@
+from tensorflow.python.keras.backend import set_session
+from tensorflow.python.keras.models import load_model
 import tensorflow as tf
 import numpy as np
+
+tf_config = some_custom_config
+sess = tf.Session(config=tf_config)
+graph = tf.get_default_graph()
+set_session(sess)
 
 class ReplayBuffer(object):
     def __init__(self,max_size, input_shape):
@@ -75,7 +82,11 @@ class Agent(object):
             action = np.random.choice(self.action_space)
         else:
             state = np.array([observation],copy=False, dtype=np.float32)
-            actions = self.q_eval.predict(state)
+            global sess
+            global graph
+            with graph.as_default():
+                set_session(sess)
+                actions = self.q_eval.predict(state)
             action = np.argmax(actions)
         
         return action
@@ -84,8 +95,12 @@ class Agent(object):
         if self.memory.mem_cntr > self.batch_size:
             state, action, reward, new_state, done = self.memory.sample_buffer(self.batch_size)
             self.replace_target_network()
-            q_eval = self.q_eval.predict(state)
-            q_next = self.q_eval.predict(new_state)
+            global sess
+            global graph
+            with graph.as_default():
+                set_session(sess)
+                q_eval = self.q_eval.predict(state)
+                q_next = self.q_eval.predict(new_state)
             q_next[done] = 0.0
             indices = np.arange(self.batch_size)
             q_target = q_eval[:]
