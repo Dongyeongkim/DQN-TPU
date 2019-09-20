@@ -3,8 +3,7 @@ from tensorflow.python.keras.models import load_model
 import tensorflow as tf
 import numpy as np
 
-tf_config = some_custom_config
-sess = tf.Session(config=tf_config)
+sess = tf.Session()
 graph = tf.get_default_graph()
 set_session(sess)
 
